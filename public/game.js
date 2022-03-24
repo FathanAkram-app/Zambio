@@ -117,7 +117,7 @@ function init(){
     c.addEventListener("mousedown", (e)=>{
         
         
-        shoot(playerInfo.posX,playerInfo.posY,e.clientX,e.clientY)
+        shoot(playerInfo.posX,playerInfo.posY,(e.clientX*2)-8,(e.clientY*2)-14)
         socket.emit("gunshot", bulletTrace)
         console.log(playerInfo)
         console.log(e)
@@ -127,7 +127,7 @@ function init(){
 
 }
 function shoot(pX,pY,mX,mY) {
-    bulletTrace = {pX: pX, pY:pY ,mX:(mX*2)-8, mY: (mY*2)-14}
+    bulletTrace = {pX: pX, pY:pY ,mX:mX, mY: mY}
     setTimeout(() => {
         bulletTrace = {}
 
