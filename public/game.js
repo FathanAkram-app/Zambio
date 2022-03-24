@@ -8,11 +8,15 @@ var players = {}
 var zombies = []
 var bulletTrace = {}
 var keydowns = []
+const socket = io()
 
 var moveUp = null
 var moveDown = null
 var moveRight = null
 var moveLeft = null
+
+let c = document.getElementById("frame");
+let context = ()=> c.getContext("2d");
 function keyInit() {
     window.addEventListener('keydown',e =>{
         if (e.repeat) {
@@ -80,12 +84,12 @@ function init(){
     const nickname = prompt("Nickname :")
     playerInfo.nickname = nickname
     connect()
-    let c = document.getElementById("frame");
+    
     
     
     setInterval(() => {
         
-        let context = ()=> c.getContext("2d")
+        
         context().clearRect(0,0,c.width, c.height)
         if (playerInfo.health > 0) {
             for (const i in players) {
@@ -106,12 +110,15 @@ function init(){
         }
         if (bulletTrace != {}) {
             trace(context,bulletTrace)
+            
         }
     }, 1);
 
     c.addEventListener("mousedown", (e)=>{
-        bulletTrace = {pX: playerInfo.posX, pY:playerInfo.posY ,mX:e.clientX,mY:e.clientY}
-        shoot()
+        
+        
+        shoot(playerInfo.posX,playerInfo.posY,e.clientX,e.clientY)
+        socket.emit("gunshot", bulletTrace)
         console.log(playerInfo)
         console.log(e)
     })
@@ -119,15 +126,14 @@ function init(){
     
 
 }
-function shoot() {
-    
+function shoot(pX,pY,mX,mY) {
+    bulletTrace = {pX: pX, pY:pY ,mX:(mX*2)-8, mY: (mY*2)-14}
     setTimeout(() => {
         bulletTrace = {}
 
     }, 500);
 
 }
-const socket = io()
 function connect(){
     
     socket.on("connect", () => {
@@ -143,11 +149,12 @@ function connect(){
             players = playersInfo
             
         })
-
-
-        
         socket.on("addZombie", (z)=>{
             zombies = z
+        })
+
+        socket.on("gunshot", (b)=>{
+            shoot(b.pX, b.pY, b.mX, b.mY)
         })
 
         
@@ -163,7 +170,6 @@ init()
 
 
 function mU() {
-    console.log("mU")
     if (keydowns[keydowns.indexOf(87)] == 87) {
         playerInfo.posY -= 2
         playerUpdate()

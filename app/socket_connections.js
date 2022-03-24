@@ -10,13 +10,14 @@ module.exports = {
             if (zombies.length < 10) {
                 const posX = Math.random() * 1920
                 const posY = Math.random() * 1080
-                zombies.push({posX: posX, posY: posY, sizeH: 10, sizeW: 10, nickname: "zombie" ,color:"blue",colorName:null})
+                zombies.push({posX: posX, posY: posY, sizeH: 10, sizeW: 10, nickname: "zombie" ,color:"blue",colorName:null,health:10})
                 io.local.emit("addZombie",zombies)
                 console.log("zombie +1")
             }
             for (const i in zombies) {
                 const ranges = []
                 const pos = []
+                
                 
 
                 for (const inn in players) {
@@ -72,6 +73,12 @@ module.exports = {
             socket.on("disconnect", ()=>{
                 
                 delete players[socket.id]
+                
+            })
+
+            socket.on("gunshot", (bulletTrace)=>{ 
+                socket.broadcast.emit("gunshot",{...bulletTrace, mX: bulletTrace.mX, mY: bulletTrace.mY})
+                
                 
             })
             

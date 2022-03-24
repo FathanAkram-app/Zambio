@@ -3,7 +3,7 @@ export const trace = (c,bulletTraces)=>{
     bullet.beginPath()
        
     bullet.moveTo(bulletTraces.pX, bulletTraces.pY);
-    bullet.lineTo((bulletTraces.mX*2)-8, (bulletTraces.mY*2)-14);
+    bullet.lineTo(bulletTraces.mX, bulletTraces.mY);
     bullet.strokeStyle = "yellow"
     bullet.stroke()
     
